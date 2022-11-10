@@ -57,5 +57,14 @@
       "url": "/about",
       "icons": [{ "src": "assets/icons/icon_192.png", "sizes": "192x192" }]
     }
-  ]
+  ],
+  "share_target": {
+    "action": "/_share-target",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

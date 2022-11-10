@@ -1,8 +1,3 @@
-.DS_Store
-node_modules
-dist
-dev-dist
-build
-types
-.idea
-.github
+venv/
+db.sqlite3
+*.py[cod]
