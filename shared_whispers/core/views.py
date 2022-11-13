@@ -8,8 +8,8 @@ from typing import Optional
 from typing import Tuple
 
 from django.conf import settings
-from django.http import HttpResponse
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from replicate import default_client as replicate_client
@@ -20,7 +20,7 @@ ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 @require_http_methods(("GET"))
 def share_target(request):
-    return HttpResponse("shared")
+    return render(request, "core/share_target.html", {})
 
 
 @require_http_methods(("POST",))

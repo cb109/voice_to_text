@@ -7,15 +7,17 @@ workbox.core.clientsClaim();
 
 workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
+let messageChannelPort;
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'INIT_PORT') {
+    messageChannelPort = event.ports[0];
+  }
+});
+
 const shareTargetHandler = async ({event}) => {
-  console.log('event', event);
-  // alert(event);
-
-  // const formData = await event.request.formData();
-  // console.log('formData', formData);
-  // alert(formData);
-
-  return Response.redirect('/share/', 303);
+  if (messageChannelPort) {
+    messageChannelPort.postMessage({payload: 'hi from sw'});
+  }
 };
 
 workbox.routing.registerRoute(

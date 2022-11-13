@@ -6,6 +6,12 @@
     <title>Shared Whispers</title>
     <link rel="manifest" href="/manifest.json" />
   </head>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 16px;
+    }
+  </style>
   <body>
 
     Please open this app in Chrome on your phone and choose "Install App"
@@ -22,10 +28,22 @@
 
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register(
-          '/sw.js'
-        );
+        navigator.serviceWorker.register('/sw.js');
       }
+
+      const messageChannel = new MessageChannel();
+
+      navigator.serviceWorker.controller.postMessage({
+        type: 'INIT_PORT',
+      }, [messageChannel.port2]);
+
+      messageChannel.port1.onmessage = (event) => {
+        // Print the result
+        console.log(event.data.payload);
+        alert('incoming from sw:');
+        alert(event.data.payload);
+      };
+
     </script>
   </body>
 </html>
