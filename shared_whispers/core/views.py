@@ -100,6 +100,7 @@ def _handle_transcription_request(request) -> dict:
     # Remember a few things in session for ease of reuse.
     request.session["token"] = replicate_api_token
     request.session["language"] = language or ""
+    request.session["last_transcription"] = results["text"]
 
     return results
 
@@ -108,6 +109,7 @@ def _get_session_template_context(request):
     return {
         "token": request.session.get("token", None),
         "language": request.session.get("language", ""),
+        "last_transcription": request.session.get("last_transcription", ""),
     }
 
 

@@ -41,10 +41,14 @@
       </div>
     </form>
     {% if results %}
-    <div style="margin: 8px">
-      Translation took {{ results.time|floatformat:1 }} seconds.
-    </div>
-    <textarea rows="10" style="width: 100%">{{ results.text }}</textarea>
+      <div style="margin: 8px">
+        Translation took {{ results.time|floatformat:1 }} seconds.
+      </div>
+      <textarea rows="10" style="width: 95%">{{ results.text }}</textarea>
+    {% elif last_transcription %}
+      <textarea
+        style="margin: 8px; width: 95%"
+        rows="10">{{ last_transcription }}</textarea>
     {% endif %}
     <a
       style="display: block; margin-top: 8px"
