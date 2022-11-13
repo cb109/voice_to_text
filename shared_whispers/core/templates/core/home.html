@@ -8,21 +8,16 @@
   for audio files.
 </p>
 
-<p>
-  Make sure to save your replicate API token first, though:
-</p>
-<p>
-  <input type="text" name="token" placeholder="REPLICATE API TOKEN">
-  <button id="btn-save-token">Save</button>
-</p>
+<hr>
 
-<a
-  style="display: block; margin-top: 8px"
-  href="https://replicate.com"
-  target="_blank"
->
-  https://replicate.com
-</a>
+<p>
+  Make sure to store your <a href="https://replicate.com">replicate</a>
+  API token first, though:
+</p>
+<p style="display: flex">
+  <input type="text" name="token" placeholder="REPLICATE API TOKEN" style="flex-grow: 1; padding: 8px; margin-right: 4px">
+  <button id="btn-save-token" style="padding: 8px">Save</button>
+</p>
 
 <script>
   // https://www.w3schools.com/js/js_cookies.asp
@@ -60,10 +55,11 @@
     const button = document.getElementById('btn-save-token');
     button.addEventListener('click', (event) => {
       const token = input.value;
-      if (!token) {
-        return;
-      }
       setCookie('replicate-api-token', token);
+      alert(
+        'Token was stored in the browser, it will be used ' +
+        'when you share a file to this app.'
+      );
     });
 
   })();

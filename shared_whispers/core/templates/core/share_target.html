@@ -2,10 +2,34 @@
 
 {% block content %}
 
-<div>
+<div
+  style="
+    font-size: small;
+    color: gray;
+  ">
   Transcription took {{ results.time|floatformat:1 }} seconds.
+  <a
+    href="https://replicate.com"
+    target="_blank"
+  >
+    https://replicate.com
+  </a>
 </div>
 
-<textarea rows="10" style="width: calc(100% - 8px)">{{ results.text }}</textarea>
+<p>
+  {{ results.text }}
+</p>
+
+<button onclick="copyTextToClipboard()" style="padding: 8px">Copy to clipboard</button>
+
+<script>
+
+function copyTextToClipboard() {
+  const text = '{{ results.text }}';
+  navigator.clipboard.writeText(text);
+  alert('Copied text to clipboard');
+}
+
+</script>
 
 {% endblock content %}
