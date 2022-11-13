@@ -18,14 +18,8 @@ from replicate import default_client as replicate_client
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 
-@require_http_methods(("POST"))
+@require_http_methods(("GET"))
 def share_target(request):
-    from pprint import pprint
-
-    pprint(request.POST)
-    from pprint import pprint
-
-    pprint(request.FILES)
     return HttpResponse("shared")
 
 
