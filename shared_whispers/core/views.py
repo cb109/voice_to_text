@@ -27,6 +27,12 @@ def home(request):
 @csrf_exempt
 @require_http_methods(("POST"))
 def share_target(request):
+    from pprint import pprint
+
+    pprint(request.POST)
+    from pprint import pprint
+
+    pprint(request.FILES)
     return render(request, "core/share_target.html", {})
 
 
