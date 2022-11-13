@@ -27,6 +27,7 @@ def home(request):
 @csrf_exempt
 @require_http_methods(("POST"))
 def share_target(request):
+    print(request.COOKIES)
     from pprint import pprint
 
     pprint(request.POST)
