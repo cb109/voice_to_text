@@ -18,9 +18,7 @@
     to save it to your launch screen. You can then use it as a "Share" target
     for audio files.
 
-    {% if busy %}
-      <h1>BUSY BUSY!</h1>
-    {% endif %}
+    <h1 id="busy" style="display: none">BUSY</h1>
 
     <a
       style="display: block; margin-top: 8px"
@@ -46,13 +44,10 @@
             type: 'INIT_PORT',
           }, [messageChannel.port2]);
 
-          // Test it.
-          navigator.serviceWorker.controller.postMessage({
-            type: 'PING',
-          });
-
           messageChannel.port1.onmessage = (event) => {
-            alert(event.data.payload);
+            if (event.data.payload == 'BUSY') {
+              document.getElementById('busy').style.display = 'block';
+            };
           };
 
           // After the initial load, force a service worker update check each time
