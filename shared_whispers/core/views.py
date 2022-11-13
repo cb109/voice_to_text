@@ -2,8 +2,10 @@ import os
 import subprocess
 import time
 import uuid
+from typing import Callable
 from typing import IO
 from typing import Optional
+from typing import Tuple
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -84,18 +86,16 @@ def api_transcribe_audio(request):
     return JsonResponse(results)
 
 
-def _handle_transcription_request(request) -> dict:
+def _handle_transcription_request(request, do_cleanup: bool = True) -> dict:
     replicate_api_token = request.POST["token"]
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
 
     audio: IO = request.FILES["audio"]
-    normalized_audio_filepath = _normalize_audio(audio)
+    normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
     normalized_audio = open(normalized_audio_filepath, "rb")
 
-    # Validate it's not too long, refuse if it is.
-
-    # Pass it to replicate for transcription using options.
+    # TODO: Validate it's not too long, refuse if it is.
 
     results = _transcribe_audio_file_with_replicate(
         audio=normalized_audio,
@@ -104,26 +104,17 @@ def _handle_transcription_request(request) -> dict:
         language=language,
     )
 
-    # Remember a few things in session for ease of reuse.
-    request.session["token"] = replicate_api_token
-    request.session["language"] = language or ""
-    request.session["last_transcription"] = results["text"]
+    if do_cleanup:
+        cleanup_files()
 
     return results
 
 
-def _get_session_template_context(request):
-    return {
-        "token": request.session.get("token", None),
-        "language": request.session.get("language", ""),
-        "last_transcription": request.session.get("last_transcription", ""),
-    }
-
-
-def _normalize_audio(audio: IO) -> str:
+def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
     """Save given audio data to disk and normalize it to .wav format.
 
-    Return path to .wav file.
+    Return path to .wav file as well as a function to remove the files
+    in case they are not needed anymore later on.
 
     """
     prefix = str(uuid.uuid4()) + "_"
@@ -150,7 +141,14 @@ def _normalize_audio(audio: IO) -> str:
     ]
     subprocess.check_call(ffmpeg_options)
 
-    return normalized_audio_filepath
+    def _cleanup_files():
+        for filepath in (initial_audio_filepath, normalized_audio_filepath):
+            try:
+                os.remove(filepath)
+            except Exception as err:
+                print(err)
+
+    return normalized_audio_filepath, _cleanup_files
 
 
 def _transcribe_audio_file_with_replicate(
