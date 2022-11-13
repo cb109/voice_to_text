@@ -9,11 +9,13 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
 const shareTargetHandler = async ({event}) => {
   console.log('event', event);
-  alert(event);
+  // alert(event);
 
-  const formData = await event.request.formData();
-  console.log('formData', formData);
-  alert(formData);
+  // const formData = await event.request.formData();
+  // console.log('formData', formData);
+  // alert(formData);
+
+  return Response.redirect('/share/', 303);
 };
 
 workbox.routing.registerRoute(

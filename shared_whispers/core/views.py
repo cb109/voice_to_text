@@ -26,7 +26,7 @@ def share_target(request):
     from pprint import pprint
 
     pprint(request.FILES)
-    return HttpResponse(request.FILES["audio"].name)
+    return HttpResponse("shared")
 
 
 @require_http_methods(("GET", "POST"))
