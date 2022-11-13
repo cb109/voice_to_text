@@ -10,8 +10,6 @@ from typing import Tuple
 from django.conf import settings
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
 
 from replicate import default_client as replicate_client
@@ -23,34 +21,6 @@ ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 @require_http_methods(("GET"))
 def share_target(request):
     return HttpResponse("shared")
-
-
-@require_http_methods(("GET", "POST"))
-def transcribe_page(request):
-    if request.method == "GET":
-        return render(
-            request, "core/transcribe_page.html", _get_session_template_context(request)
-        )
-    return transcribe_audio(request)
-
-
-@require_http_methods(("POST",))
-def transcribe_audio(request):
-    """Pass given audio file to replicate.com and and show results on page.
-
-    For details on input args, see api_transcribe_audio().
-
-    Returns:
-
-        html
-
-    """
-    results = _handle_transcription_request(request)
-    return render(
-        request,
-        "core/transcribe_page.html",
-        {"results": results, **_get_session_template_context(request)},
-    )
 
 
 @require_http_methods(("POST",))
@@ -82,11 +52,6 @@ def api_transcribe_audio(request):
             and 'time' (float) as the number of seconds this took.
 
     """
-    results = _handle_transcription_request(request)
-    return JsonResponse(results)
-
-
-def _handle_transcription_request(request, do_cleanup: bool = True) -> dict:
     replicate_api_token = request.POST["token"]
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
@@ -104,10 +69,9 @@ def _handle_transcription_request(request, do_cleanup: bool = True) -> dict:
         language=language,
     )
 
-    if do_cleanup:
-        cleanup_files()
+    cleanup_files()
 
-    return results
+    return JsonResponse(results)
 
 
 def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
