@@ -24,7 +24,7 @@ const shareTargetHandler = async ({event}) => {
     messageChannelPort.postMessage({payload: 'shared!'});
   }
 
-  return Response.redirect('', 303);
+  return Response.redirect('/', 303);
 };
 
 workbox.routing.registerRoute('/_share-target', shareTargetHandler, 'POST');
