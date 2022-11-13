@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from shared_whispers.core.views import transcribe_audio
+from shared_whispers.core.views import transcribe_page
+from shared_whispers.core.views import api_transcribe_audio
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/transcribe/", transcribe_audio, name="transcribe-audio"),
+    path("api/transcribe/", api_transcribe_audio, name="api-transcribe"),
+    path("", transcribe_page, name="transcribe-page"),
 ]

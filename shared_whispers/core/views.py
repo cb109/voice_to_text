@@ -5,10 +5,10 @@ import uuid
 from typing import IO
 from typing import Optional
 
-# from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
 from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 
 from replicate import default_client as replicate_client
 
@@ -16,9 +16,37 @@ from replicate import default_client as replicate_client
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 
+@require_http_methods(("GET", "POST"))
+def transcribe_page(request):
+    if request.method == "GET":
+        return render(request, "core/transcribe_page.html", {})
+    return transcribe_audio(request)
+
+
 @require_http_methods(("POST",))
 def transcribe_audio(request):
+    """Pass given audio file to replicate.com and and show results on page.
+
+    For details on input args, see api_transcribe_audio().
+
+    Returns:
+
+        html
+
+    """
+    results = _handle_transcription_request(request)
+    return render(request, "core/transcribe_page.html", {"results": results})
+
+
+@require_http_methods(("POST",))
+def api_transcribe_audio(request):
     """Pass given audio file to replicate.com and return transcribed text.
+
+    FILES Args:
+
+        audio (IO): The uploaded audio content. Any audio format which
+            ffmpeg understands is accepted and will be converted to .wav
+            before passing it to openai/whisper.
 
     POST Args:
 
@@ -39,6 +67,11 @@ def transcribe_audio(request):
             and 'time' (float) as the number of seconds this took.
 
     """
+    results = _handle_transcription_request(request)
+    return JsonResponse(results)
+
+
+def _handle_transcription_request(request) -> dict:
     replicate_api_token = request.POST["token"]
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
@@ -51,17 +84,13 @@ def transcribe_audio(request):
 
     # Pass it to replicate for transcription using options.
 
-    # Return transcription and how long it took.
     results = _transcribe_audio_file_with_replicate(
         audio=normalized_audio,
         model=model,
         replicate_api_token=replicate_api_token,
         language=language,
     )
-
-    # Cleanup audio files?
-
-    return JsonResponse(results)
+    return results
 
 
 def _normalize_audio(audio: IO) -> str:
@@ -119,4 +148,5 @@ def _transcribe_audio_file_with_replicate(
     return {
         "text": output["transcription"],
         "time": end_time - start_time,  # In seconds.
+        "token": replicate_api_token,  # To maybe reuse on page.
     }

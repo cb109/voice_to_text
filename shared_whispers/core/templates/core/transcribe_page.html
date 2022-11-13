@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Shared Whispers</title>
+  </head>
+  <body>
+    <form
+      action="{% url 'transcribe-page' %}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        <label>
+          API Token for replicate.com
+          <input
+            required
+            type="text"
+            name="token"
+            value="{{ results.token }}"
+          >
+        </label>
+        <input
+          required
+          type="file"
+          accept="audio/*"
+          name="audio"
+          style="margin-top: 8px"
+        >
+        <button type="submit" style="margin-top: 16px">Transcribe</button>
+      </div>
+    </form>
+    {% if results %}
+    <div style="margin: 8px">
+      Translation took {{ results.time|floatformat:1 }} seconds.
+    </div>
+    <textarea rows="10" style="width: 100%">{{ results.text }}</textarea>
+    {% endif %}
+    <a
+      style="display: block; margin-top: 8px"
+      href="https://replicate.com/"
+      target="_blank"
+    >https://replicate.com/</a>
+  </body>
+</html>
