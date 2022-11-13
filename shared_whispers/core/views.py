@@ -19,7 +19,9 @@ ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 @require_http_methods(("GET", "POST"))
 def transcribe_page(request):
     if request.method == "GET":
-        return render(request, "core/transcribe_page.html", {})
+        return render(
+            request, "core/transcribe_page.html", _get_session_template_context(request)
+        )
     return transcribe_audio(request)
 
 
@@ -35,7 +37,11 @@ def transcribe_audio(request):
 
     """
     results = _handle_transcription_request(request)
-    return render(request, "core/transcribe_page.html", {"results": results})
+    return render(
+        request,
+        "core/transcribe_page.html",
+        {"results": results, **_get_session_template_context(request)},
+    )
 
 
 @require_http_methods(("POST",))
@@ -90,7 +96,19 @@ def _handle_transcription_request(request) -> dict:
         replicate_api_token=replicate_api_token,
         language=language,
     )
+
+    # Remember a few things in session for ease of reuse.
+    request.session["token"] = replicate_api_token
+    request.session["language"] = language or ""
+
     return results
+
+
+def _get_session_template_context(request):
+    return {
+        "token": request.session.get("token", None),
+        "language": request.session.get("language", ""),
+    }
 
 
 def _normalize_audio(audio: IO) -> str:
@@ -148,5 +166,4 @@ def _transcribe_audio_file_with_replicate(
     return {
         "text": output["transcription"],
         "time": end_time - start_time,  # In seconds.
-        "token": replicate_api_token,  # To maybe reuse on page.
     }
