@@ -7,6 +7,15 @@
   to save it to your launch screen. You can then use it as a "Share" target
   for audio files.
 </p>
+
+<p>
+  Make sure to save your replicate API token first, though:
+</p>
+<p>
+  <input type="text" name="token" placeholder="REPLICATE API TOKEN">
+  <button id="btn-save-token">Save</button>
+</p>
+
 <a
   style="display: block; margin-top: 8px"
   href="https://replicate.com"
@@ -14,5 +23,26 @@
 >
   https://replicate.com
 </a>
+
+<script>
+  (function() {
+
+    const input = document.querySelector('input[name=token]');
+    const lastToken = localStorage.getItem('token');
+    if (lastToken) {
+      input.value = lastToken;
+    }
+
+    const button = document.getElementById('btn-save-token');
+    button.addEventListener('click', (event) => {
+      const token = input.value;
+      if (!token) {
+        return;
+      }
+      localStorage.setItem('token', token);
+    });
+
+  })();
+</script>
 
 {% endblock content %}
