@@ -21,10 +21,10 @@ self.addEventListener('message', event => {
 
 const shareTargetHandler = async ({event}) => {
   if (messageChannelPort) {
-    messageChannelPort.postMessage({payload: 'shared!'});
+    // messageChannelPort.postMessage({payload: 'BUSY'});
   }
 
-  return Response.redirect('/', 303);
+  return Response.redirect('/?busy=true', 303);
 };
 
 workbox.routing.registerRoute('/_share-target', shareTargetHandler, 'POST');

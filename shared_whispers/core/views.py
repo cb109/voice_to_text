@@ -20,7 +20,9 @@ ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 @require_http_methods(("GET"))
 def share_target(request):
-    return render(request, "core/share_target.html", {})
+    return render(
+        request, "core/share_target.html", {"busy": request.GET.get("busy", False)}
+    )
 
 
 @require_http_methods(("POST",))
