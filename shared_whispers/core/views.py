@@ -10,6 +10,7 @@ from typing import Tuple
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from replicate import default_client as replicate_client
@@ -23,6 +24,7 @@ def home(request):
     return render(request, "core/home.html", {})
 
 
+@csrf_exempt
 @require_http_methods(("POST"))
 def share_target(request):
     return render(request, "core/share_target.html", {})
