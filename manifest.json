@@ -1,0 +1,9 @@
+{
+  "name": "Shared Whispers",
+  "short_name": "Shared Whispers",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+
+  ]
+}
