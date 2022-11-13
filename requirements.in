@@ -1,3 +1,8 @@
+# prod
 django
-pip-tools
 replicate
+
+# dev
+pip-tools
+pytest
+pytest-django

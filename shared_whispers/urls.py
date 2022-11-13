@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from shared_whispers.core.views import transcribe_audio
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/transcribe/", transcribe_audio, name="transcribe-audio"),
 ]
