@@ -27,19 +27,10 @@ def home(request):
 @csrf_exempt
 @require_http_methods(("POST"))
 def share_target(request):
-    print(request.COOKIES)
-    from pprint import pprint
-
-    pprint(request.POST)
-    from pprint import pprint
-
-    pprint(request.FILES)
-    return render(request, "core/share_target.html", {})
-
-
-@require_http_methods(("POST",))
-def api_transcribe_audio(request):
     """Pass given audio file to replicate.com and return transcribed text.
+
+    This endpoint is the target for the mobile phone's "Share file"
+    feature.
 
     FILES Args:
 
@@ -66,7 +57,7 @@ def api_transcribe_audio(request):
             and 'time' (float) as the number of seconds this took.
 
     """
-    replicate_api_token = request.POST["token"]
+    replicate_api_token = request.COOKIES["replicate-api-token"]
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
 
@@ -85,7 +76,7 @@ def api_transcribe_audio(request):
 
     cleanup_files()
 
-    return JsonResponse(results)
+    return render(request, "core/share_target.html", {"results": results})
 
 
 def _normalize_audio(audio: IO) -> Tuple[str, Callable]:

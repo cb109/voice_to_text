@@ -2,6 +2,10 @@
 
 {% block content %}
 
-share target
+<div>
+  Transcription took {{ results.time|floatformat:1 }} seconds.
+</div>
+
+<textarea rows="10" style="width: calc(100% - 8px)">{{ results.text }}</textarea>
 
 {% endblock content %}
