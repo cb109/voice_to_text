@@ -1,6 +1,7 @@
 # prod
 django
 replicate
+whitenoise
 
 # dev
 pip-tools

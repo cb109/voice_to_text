@@ -69,6 +69,8 @@ urllib3==1.26.12
     # via requests
 wheel==0.38.4
     # via pip-tools
+whitenoise==6.2.0
+    # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
