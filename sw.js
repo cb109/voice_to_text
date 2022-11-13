@@ -20,7 +20,9 @@ self.addEventListener('message', event => {
 });
 
 const shareTargetHandler = async ({event}) => {
-
+  if (messageChannelPort) {
+    messageChannelPort.postMessage({payload: 'shared!'});
+  }
 };
 
 workbox.routing.registerRoute(
