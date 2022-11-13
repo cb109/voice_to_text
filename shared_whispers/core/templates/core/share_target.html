@@ -1,65 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Shared Whispers</title>
-    <link rel="manifest" href="/manifest.json" />
-  </head>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 16px;
-    }
-  </style>
-  <body>
+{% extends 'core/base.html' %}
 
-    Please open this app in Chrome on your phone and choose "Install App"
-    to save it to your launch screen. You can then use it as a "Share" target
-    for audio files.
+{% block content %}
 
-    <h1 id="busy" style="display: none">BUSY</h1>
+share target
 
-    <a
-      style="display: block; margin-top: 8px"
-      href="https://replicate.com"
-      target="_blank"
-    >
-      https://replicate.com
-    </a>
-
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload();
-        });
-
-        window.addEventListener('load', async () => {
-          const registration = await navigator.serviceWorker.register('/sw.js');
-
-          // Setup messaging to browser.
-          const messageChannel = new MessageChannel();
-
-          navigator.serviceWorker.controller.postMessage({
-            type: 'INIT_PORT',
-          }, [messageChannel.port2]);
-
-          messageChannel.port1.onmessage = (event) => {
-            if (event.data.payload == 'BUSY') {
-              document.getElementById('busy').style.display = 'block';
-            };
-          };
-
-          // After the initial load, force a service worker update check each time
-          // our web app is hidden and then brought back to the foreground.
-          document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-              registration.update();
-            }
-          });
-        });
-      }
-
-    </script>
-  </body>
-</html>
+{% endblock content %}

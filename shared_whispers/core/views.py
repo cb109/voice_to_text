@@ -19,6 +19,11 @@ ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 
 @require_http_methods(("GET"))
+def home(request):
+    return render(request, "core/home.html", {})
+
+
+@require_http_methods(("POST"))
 def share_target(request):
     return render(request, "core/share_target.html", {})
 
