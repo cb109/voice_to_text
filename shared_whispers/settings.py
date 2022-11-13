@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 
 CSRF_TRUSTED_ORIGINS = []
 
+SESSION_COOKIE_AGE = 31536000  # One year in seconds.
+
 # Application definition
 
 INSTALLED_APPS = [
