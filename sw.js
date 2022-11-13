@@ -29,7 +29,8 @@ const shareTargetHandler = async ({event}) => {
       return Response.redirect('/', 303);
     }, 3000);
   });
-  return promise;
+
+  return event.respondWith(promise);
 };
 
 workbox.routing.registerRoute('/_share-target', shareTargetHandler, 'POST');
