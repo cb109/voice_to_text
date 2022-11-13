@@ -24,13 +24,7 @@ const shareTargetHandler = async ({event}) => {
     messageChannelPort.postMessage({payload: 'BUSY'});
   }
 
-  const promise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      return Response.redirect('/', 303);
-    }, 3000);
-  });
-
-  return event.respondWith(promise);
+  return event.respondWith(null);
 };
 
 workbox.routing.registerRoute('/_share-target', shareTargetHandler, 'POST');
