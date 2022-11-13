@@ -23,12 +23,11 @@ const shareTargetHandler = async ({event}) => {
   if (messageChannelPort) {
     messageChannelPort.postMessage({payload: 'shared!'});
   }
+
+  event.stopPropagation();
+  event.preventDefault();
 };
 
-workbox.routing.registerRoute(
-  '/_share-target',
-  shareTargetHandler,
-  'POST'
-);
+workbox.routing.registerRoute('/_share-target', shareTargetHandler, 'POST');
 
 console.log('service worker initialized');
