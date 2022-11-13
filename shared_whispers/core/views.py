@@ -6,14 +6,27 @@ from typing import IO
 from typing import Optional
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
 
 from replicate import default_client as replicate_client
 
 
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
+
+
+@require_http_methods(("POST"))
+def share_target(request):
+    from pprint import pprint
+
+    pprint(request.POST)
+    from pprint import pprint
+
+    pprint(request.FILES)
+    return HttpResponse(request.FILES["audio"].name)
 
 
 @require_http_methods(("GET", "POST"))

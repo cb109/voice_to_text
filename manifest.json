@@ -5,5 +5,21 @@
   "start_url": "/",
   "icons": [
 
-  ]
+  ],
+  "prefer_related_applications": false,
+  "categories": [
+    "utility"
+  ],
+  "scope": "/",
+  "share_target": {
+    "action": "/share",
+    "enctype": "multipart/form-data",
+    "method": "POST",
+    "params": {
+      "files": [{
+        "name": "audio",
+        "accept": ["audio/*"]
+      }]
+    }
+  }
 }
