@@ -28,22 +28,38 @@
 
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          window.location.reload();
+        });
+
+        window.addEventListener('load', async () => {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+
+          // Setup messaging to browser.
+          const messageChannel = new MessageChannel();
+
+          navigator.serviceWorker.controller.postMessage({
+            type: 'INIT_PORT',
+          }, [messageChannel.port2]);
+
+          // Test it.
+          navigator.serviceWorker.controller.postMessage({
+            type: 'PING',
+          });
+
+          messageChannel.port1.onmessage = (event) => {
+            alert(event.data.payload);
+          };
+
+          // After the initial load, force a service worker update check each time
+          // our web app is hidden and then brought back to the foreground.
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+              registration.update();
+            }
+          });
+        });
       }
-
-      const messageChannel = new MessageChannel();
-
-      navigator.serviceWorker.controller.postMessage({
-        type: 'INIT_PORT',
-      }, [messageChannel.port2]);
-
-      navigator.serviceWorker.controller.postMessage({
-        type: 'PING',
-      });
-
-      messageChannel.port1.onmessage = (event) => {
-        alert(event.data.payload);
-      };
 
     </script>
   </body>
