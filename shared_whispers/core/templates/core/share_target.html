@@ -37,6 +37,10 @@
         type: 'INIT_PORT',
       }, [messageChannel.port2]);
 
+      navigator.serviceWorker.controller.postMessage({
+        type: 'PING',
+      });
+
       messageChannel.port1.onmessage = (event) => {
         // Print the result
         console.log(event.data.payload);

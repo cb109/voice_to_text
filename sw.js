@@ -9,15 +9,18 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
 let messageChannelPort;
 self.addEventListener('message', event => {
+
   if (event.data && event.data.type === 'INIT_PORT') {
     messageChannelPort = event.ports[0];
+  }
+
+  if (messageChannelPort && event.data && event.data.type === 'PING') {
+    messageChannelPort.postMessage({payload: 'PONG'});
   }
 });
 
 const shareTargetHandler = async ({event}) => {
-  if (messageChannelPort) {
-    messageChannelPort.postMessage({payload: 'hi from sw'});
-  }
+
 };
 
 workbox.routing.registerRoute(
