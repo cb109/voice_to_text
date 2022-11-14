@@ -1,11 +1,17 @@
 {% extends 'core/base.html' %}
 
+{% load static %}
+
 {% block content %}
 
+<div style="display: flex; justify-content: center; margin-top: 32px;">
+  <img src="{% static "icons/icon_192.png" %}">
+</div>
+
 <p>
-  Please open this app in Chrome on your phone and choose "Install App"
-  to save it to your launch screen. You can then use it as a "Share" target
-  for audio files.
+  Please open this app in Chrome on your phone and choose "Install App"<br>
+  to save it to your launch screen.
+  You can then use it as a "Share" target for audio files.
 </p>
 
 <hr>
