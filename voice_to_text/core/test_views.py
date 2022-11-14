@@ -16,7 +16,7 @@ def mocked_replicate_service(monkeypatch):
         return {"text": "Now go away or I shall taunt you a second time!", "time": 3.05}
 
     monkeypatch.setattr(
-        "shared_whispers.core.views._transcribe_audio_file_with_replicate",
+        "voice_to_text.core.views._transcribe_audio_file_with_replicate",
         mocked_transcribe,
     )
 
