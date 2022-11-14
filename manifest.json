@@ -1,6 +1,6 @@
 {
-  "name": "Shared Whispers",
-  "short_name": "Shared Whispers",
+  "name": "Voice to Text",
+  "short_name": "Voice to Text",
   "display": "standalone",
   "start_url": "/",
   "prefer_related_applications": false,
