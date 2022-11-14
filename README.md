@@ -1,6 +1,6 @@
 # voice-to-text
 
-![shared_whispers/core/static/icons/icon_192.png]
+![](shared_whispers/core/static/icons/icon_192.png)
 
 A web app that you can install on your phone with via Chrome, which allows
 to share an audio file (e.g. voice messages) to it to transcribe the audio
