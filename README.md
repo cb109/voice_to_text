@@ -10,6 +10,8 @@ into text (using [https://replicate.com/openai/whisper](https://replicate.com/op
 
 It simply passes the shared audio file to [openai/whisper](https://github.com/openai/whisper), which produces pretty good results in  reasonable time. You could host/run it yourself, but need a somewhat beefy server (at least regarding memory), so I chose to use a hosted service instead, since this is merely a prototype right now.
 
+> **Warning**: This means the audio is uploaded to the replicate.com servers and stored there along with the transcription.
+
 ## How to use
 
 - Register at [https://replicate.com/](https://replicate.com/), you can use it a while for free, but at some point they will charge you and you'll have to add credit card information.
