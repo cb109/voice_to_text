@@ -8,7 +8,6 @@ from typing import Optional
 from typing import Tuple
 
 from django.conf import settings
-from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -62,19 +61,20 @@ def share_target(request):
     language = request.POST.get("language", None)
 
     audio: IO = request.FILES["audio"]
-    normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
-    normalized_audio = open(normalized_audio_filepath, "rb")
+    try:
+        normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
+        normalized_audio = open(normalized_audio_filepath, "rb")
 
-    # TODO: Validate it's not too long, refuse if it is.
+        # TODO: Validate it's not too long, refuse if it is.
 
-    results = _transcribe_audio_file_with_replicate(
-        audio=normalized_audio,
-        model=model,
-        replicate_api_token=replicate_api_token,
-        language=language,
-    )
-
-    cleanup_files()
+        results = _transcribe_audio_file_with_replicate(
+            audio=normalized_audio,
+            model=model,
+            replicate_api_token=replicate_api_token,
+            language=language,
+        )
+    finally:
+        cleanup_files()
 
     return render(request, "core/share_target.html", {"results": results})
 
