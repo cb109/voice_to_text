@@ -19,6 +19,7 @@
 </p>
 <p style="display: flex">
   <form action="{% url 'home' %}" method="POST">
+    {% csrf_token %}
     <input
       type="password"
       name="replicate_api_token"

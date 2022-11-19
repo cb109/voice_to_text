@@ -2,30 +2,27 @@ import os
 import subprocess
 import time
 import uuid
-from typing import Callable
-from typing import IO
-from typing import Optional
-from typing import Tuple
+from typing import IO, Callable, Optional, Tuple
 
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
 from replicate import default_client as replicate_client
-
 
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 
 @require_http_methods(("GET", "POST"))
 def home(request):
-    replicate_api_token = ""
+    replicate_api_token = request.session.get("replicate_api_token", "")
+
     if request.method == "POST":
         # Remember API token for subsequent requests.
         replicate_api_token = request.POST["replicate_api_token"].strip()
         if replicate_api_token:
             request.session["replicate_api_token"] = replicate_api_token
+            return redirect("home")
 
     return render(
         request, "core/home.html", {"replicate_api_token": replicate_api_token}
