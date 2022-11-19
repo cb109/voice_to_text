@@ -7,73 +7,27 @@
 <div style="display: flex; justify-content: center; margin-top: 32px;">
   <img src="{% static "icons/icon_192.png" %}">
 </div>
-
 <p>
   Please open this app in Chrome on your phone and choose "Install App"<br>
   to save it to your launch screen.
   You can then use it as a "Share" target for audio files.
 </p>
-
 <hr>
-
 <p>
   Make sure to store your <a href="https://replicate.com/openai/whisper">replicate.com</a>
   API token first, though:
 </p>
 <p style="display: flex">
-  <input
-    type="password"
-    name="token"
-    placeholder="REPLICATE API TOKEN"
-    style="flex-grow: 1; padding: 8px; margin-right: 4px; max-width: 480px;"
-  >
-  <button id="btn-save-token" style="padding: 8px">Save</button>
+  <form action="{% url 'home' %}" method="POST">
+    <input
+      type="password"
+      name="replicate_api_token"
+      placeholder="REPLICATE_API_TOKEN"
+      style="flex-grow: 1; padding: 8px; margin-right: 4px; max-width: 480px;"
+      value="{{ replicate_api_token }}"
+    >
+    <button type="submit" style="padding: 8px">Save</button>
+  </form>
 </p>
-
-<script>
-  // https://www.w3schools.com/js/js_cookies.asp
-  function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
-
-  function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-
-  (function() {
-
-    const input = document.querySelector('input[name=token]');
-    const lastToken = getCookie('replicate-api-token');
-    if (lastToken) {
-      input.value = lastToken;
-    }
-
-    const button = document.getElementById('btn-save-token');
-    button.addEventListener('click', (event) => {
-      const token = input.value;
-      setCookie('replicate-api-token', token);
-      alert(
-        'Token was stored in the browser, it will be used ' +
-        'when you share a file to this app.'
-      );
-    });
-
-  })();
-</script>
 
 {% endblock content %}

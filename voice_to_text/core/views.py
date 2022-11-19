@@ -18,9 +18,18 @@ from replicate import default_client as replicate_client
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
 
-@require_http_methods(("GET"))
+@require_http_methods(("GET", "POST"))
 def home(request):
-    return render(request, "core/home.html", {})
+    replicate_api_token = ""
+    if request.method == "POST":
+        # Remember API token for subsequent requests.
+        replicate_api_token = request.POST["replicate_api_token"].strip()
+        if replicate_api_token:
+            request.session["replicate_api_token"] = replicate_api_token
+
+    return render(
+        request, "core/home.html", {"replicate_api_token": replicate_api_token}
+    )
 
 
 @csrf_exempt
