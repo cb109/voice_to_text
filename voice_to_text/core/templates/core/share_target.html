@@ -2,25 +2,28 @@
 
 {% block content %}
 
-<div
-  style="
-    font-size: small;
-    color: gray;
-  ">
-  Transcription took {{ results.time|floatformat:1 }} seconds.
-  <a
-    href="https://replicate.com"
-    target="_blank"
+{% for transcription in transcriptions %}
+  <h3>{{ transcription.original_filename }}</h3>
+  <div
+    style="
+      font-size: small;
+      color: gray;
+    "
   >
-    https://replicate.com
-  </a>
-</div>
-
-<p>
-  {{ results.text }}
-</p>
-
-<button onclick="copyTextToClipboard()" style="padding: 8px">Copy to clipboard</button>
+    Transcription took {{ transcription.time|floatformat:1 }} seconds.
+    <a
+      href="https://replicate.com"
+      target="_blank"
+    >
+      https://replicate.com
+    </a>
+  </div>
+  <p>
+    {{ transcription.text }}
+  </p>
+  <button onclick="copyTextToClipboard()" style="padding: 8px">Copy to clipboard</button>
+  {% if not forloop.last %}<hr>{% endif %}
+{% endfor %}
 
 <script>
 
