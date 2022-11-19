@@ -2,13 +2,18 @@ import os
 import subprocess
 import time
 import uuid
-from typing import IO, Callable, List, Optional, Tuple
+from typing import Callable
+from typing import IO
+from typing import Optional
+from typing import Tuple
 
 from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+
 from replicate import default_client as replicate_client
+
 
 ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
 
@@ -28,10 +33,9 @@ def share_target(request):
 
     FILES Args:
 
-        audio (List[IO]): The uploaded audio contents (one or more audio
-            files). Any audio format which ffmpeg understands is
-            accepted and will be converted to .wav before passing it to
-            openai/whisper.
+        audio (IO): The uploaded audio content. Any audio format which
+            ffmpeg understands is accepted and will be converted to .wav
+            before passing it to openai/whisper.
 
     POST Args:
 
@@ -56,29 +60,23 @@ def share_target(request):
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
 
-    audios: List[IO] = request.FILES.getlist("audio")
-    transcriptions: List[dict] = []
+    audio: IO = request.FILES["audio"]
+    try:
+        normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
+        normalized_audio = open(normalized_audio_filepath, "rb")
 
-    for audio in audios:
-        try:
-            original_filename = audio.name
-            normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
-            normalized_audio = open(normalized_audio_filepath, "rb")
+        # TODO: Validate it's not too long, refuse if it is.
 
-            # TODO: Validate it's not too long, refuse if it is.
+        results = _transcribe_audio_file_with_replicate(
+            audio=normalized_audio,
+            model=model,
+            replicate_api_token=replicate_api_token,
+            language=language,
+        )
+    finally:
+        cleanup_files()
 
-            transcription = _transcribe_audio_file_with_replicate(
-                audio=normalized_audio,
-                model=model,
-                replicate_api_token=replicate_api_token,
-                original_filename=original_filename,
-                language=language,
-            )
-            transcriptions.append(transcription)
-        finally:
-            cleanup_files()
-
-    return render(request, "core/share_target.html", {"transcriptions": transcriptions})
+    return render(request, "core/share_target.html", {"results": results})
 
 
 def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
@@ -126,7 +124,6 @@ def _transcribe_audio_file_with_replicate(
     audio: IO,
     model: str,
     replicate_api_token: str,
-    original_filename: str,
     language: Optional[str] = None,
 ) -> dict:
     assert model in ALLOWED_WHISPER_MODELS
@@ -143,7 +140,6 @@ def _transcribe_audio_file_with_replicate(
     end_time = time.time()
 
     return {
-        "original_filename": original_filename,
         "text": output["transcription"],
         "time": end_time - start_time,  # In seconds.
     }
