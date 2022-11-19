@@ -62,7 +62,7 @@ def share_target(request):
             and 'time' (float) as the number of seconds this took.
 
     """
-    replicate_api_token = request.COOKIES["replicate-api-token"]
+    replicate_api_token = request.session["replicate_api_token"]
     model = request.POST.get("model", "small")
     language = request.POST.get("language", None)
 
