@@ -2,7 +2,7 @@
 
 ![](voice_to_text/core/static/icons/icon_192.png)
 
-A web app that you can install on your phone with via Chrome, which allows
+A web app that you can install on your phone from Chrome (only Chrome right now has the needed APIs), which allows
 to share an audio file (e.g. voice messages) to it to transcribe the audio
 into text (using [https://replicate.com/openai/whisper](https://replicate.com/openai/whisper), you need an account!).
 
