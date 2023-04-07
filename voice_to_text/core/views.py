@@ -10,7 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from replicate import default_client as replicate_client
 
-ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
+# https://replicate.com/openai/whisper#readme
+ALLOWED_WHISPER_MODELS = ("large", "large-v2")
 
 
 @require_http_methods(("GET", "POST"))
@@ -49,8 +50,8 @@ def share_target(request):
             replicate.com.
 
         model (str): Optional. The quality level for openai/whisper, one
-            of 'tiny', 'small', 'medium'. Better quality takes longer.
-            Defaults to 'small'.
+            of 'large', 'large-v2'. Better quality takes longer.
+            Defaults to 'large-v2'.
 
         language (str): Optional, can be passed if we know the language
             beforehand, otherwise it will be auto-detected which takes a
@@ -63,7 +64,7 @@ def share_target(request):
 
     """
     replicate_api_token = request.session["replicate_api_token"]
-    model = request.POST.get("model", "small")
+    model = request.POST.get("model", "large-v2")
     language = request.POST.get("language", None)
 
     audio: IO = request.FILES["audio"]
