@@ -10,7 +10,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from replicate import default_client as replicate_client
 
-ALLOWED_WHISPER_MODELS = ("tiny", "small", "medium")
+# https://replicate.com/openai/whisper/versions
+# https://github.com/replicate/replicate-python
+WHISPER_MODELS = ("tiny", "small", "medium")
+WHISPER_MODEL_DEFAULT = "small"
+WHISPER_VERSION = "30414ee7c4fffc37e260fcab7842b5be470b9b840f2b608f5baa9bbef9a259ed"
 
 
 @require_http_methods(("GET", "POST"))
@@ -63,7 +67,7 @@ def share_target(request):
 
     """
     replicate_api_token = request.session["replicate_api_token"]
-    model = request.POST.get("model", "small")
+    model = request.POST.get("model", WHISPER_MODEL_DEFAULT)
     language = request.POST.get("language", None)
 
     audio: IO = request.FILES["audio"]
@@ -132,16 +136,17 @@ def _transcribe_audio_file_with_replicate(
     replicate_api_token: str,
     language: Optional[str] = None,
 ) -> dict:
-    assert model in ALLOWED_WHISPER_MODELS
+    assert model in WHISPER_MODELS
 
     start_time = time.time()
 
     replicate_client.api_token = replicate_api_token
     whisper = replicate_client.models.get("openai/whisper")
+    version = replicate_client.versions.get(WHISPER_VERSION)
     extra = {}
     if language:
         extra["language"] = language
-    output = whisper.predict(audio=audio, model=model, **extra)
+    output = whisper.predict(audio=audio, model=model, version=version, **extra)
 
     end_time = time.time()
 
