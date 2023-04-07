@@ -50,7 +50,7 @@ pytest==7.2.0
     #   pytest-django
 pytest-django==4.5.2
     # via -r requirements.in
-replicate==0.4.0
+replicate==0.7.0
     # via -r requirements.in
 requests==2.28.1
     # via replicate
