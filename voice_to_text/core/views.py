@@ -56,6 +56,8 @@ def share_target(request):
             of 'tiny', 'small', 'medium'. Better quality takes longer.
             Defaults to 'small'.
 
+            Note: Available options are based on the WHISPER_VERSION.
+
     Returns:
 
         json (dict): With 'text' (str) being the transcription result
