@@ -132,3 +132,5 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = "media"
+
+MAX_SECONDS_PER_CHUNK: int = 60
