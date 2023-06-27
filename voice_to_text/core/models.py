@@ -29,4 +29,6 @@ class AudioFileChunk(TimestampMixin, models.Model):
 
     index = models.PositiveIntegerField(default=0)
 
+    transcribed = models.BooleanField(default=False)
+
     transcribed_text = models.TextField(default="", blank=True)

@@ -17,6 +17,7 @@ class AudioFileAdmin(admin.ModelAdmin):
 class AudioFileChunkAdmin(admin.ModelAdmin):
     list_display = (
         "filepath",
+        "transcribed",
         "duration",
         "index",
         "original_parent_file",
