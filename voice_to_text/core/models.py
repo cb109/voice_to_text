@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.utils import timezone
 
@@ -13,6 +15,8 @@ class TimestampMixin(models.Model):
 
 
 class AudioFile(TimestampMixin, models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+
     filepath = models.CharField(max_length=512, default="", blank=True)
 
     duration = models.FloatField(default=0.0)
