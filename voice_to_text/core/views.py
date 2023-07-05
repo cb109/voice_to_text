@@ -5,10 +5,14 @@ import uuid
 from typing import IO, Callable, Optional, Tuple
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import replicate
+
+from voice_to_text.core.models import AudioFile
+from voice_to_text.core.models import get_duration
 
 # https://replicate.com/openai/whisper/versions
 # https://github.com/replicate/replicate-python
@@ -85,7 +89,7 @@ def share_target(request):
     return render(request, "core/share_target.html", {"results": results})
 
 
-def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
+def _normalize_audio(audio: IO) -> AudioFile:
     """Save given audio data to disk and normalize it to .wav format.
 
     Return path to .wav file as well as a function to remove the files
@@ -116,21 +120,26 @@ def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
     ]
     subprocess.check_call(ffmpeg_options)
 
-    def _cleanup_files():
-        for filepath in (initial_audio_filepath, normalized_audio_filepath):
-            try:
-                os.remove(filepath)
-            except Exception as err:
-                print(err)
+    audio_file = AudioFile.objects.create(
+        filepath=normalized_audio_filepath,
+        duration=get_duration(normalized_audio_filepath),
+    )
+    audio_file.chunkify()
 
-    return normalized_audio_filepath, _cleanup_files
+    # def _cleanup_files():
+    #     for filepath in (initial_audio_filepath, normalized_audio_filepath):
+    #         try:
+    #             os.remove(filepath)
+    #         except Exception as err:
+    #             print(err)
+
+    return audio_file
 
 
 def _transcribe_audio_file_with_replicate(
     audio: IO,
     model: str,
     replicate_api_token: str,
-    language: Optional[str] = None,
 ) -> dict:
     assert model in WHISPER_MODELS
 
