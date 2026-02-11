@@ -10,12 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import replicate
 
-# https://replicate.com/openai/whisper/versions
-# https://github.com/replicate/replicate-python
-WHISPER_MODELS = ("tiny", "small", "medium")
-WHISPER_MODEL_DEFAULT = "small"
-WHISPER_VERSION = "30414ee7c4fffc37e260fcab7842b5be470b9b840f2b608f5baa9bbef9a259ed"
-
 
 @require_http_methods(("GET", "POST"))
 def home(request):
@@ -52,12 +46,6 @@ def share_target(request):
         token (str): The REPLICATE_API_TOKEN to authenticate against
             replicate.com.
 
-        model (str): Optional. The quality level for openai/whisper, one
-            of 'tiny', 'small', 'medium'. Better quality takes longer.
-            Defaults to 'small'.
-
-            Note: Available options are based on the WHISPER_VERSION.
-
     Returns:
 
         json (dict): With 'text' (str) being the transcription result
@@ -70,12 +58,8 @@ def share_target(request):
     audio: IO = request.FILES["audio"]
     try:
         normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
-        normalized_audio = open(normalized_audio_filepath, "rb")
-
-        # TODO: Validate it's not too long, refuse if it is.
-
         results = _transcribe_audio_file_with_replicate(
-            audio=normalized_audio,
+            audio_filepath=normalized_audio_filepath,
             model=model,
             replicate_api_token=replicate_api_token,
         )
@@ -127,20 +111,21 @@ def _normalize_audio(audio: IO) -> Tuple[str, Callable]:
 
 
 def _transcribe_audio_file_with_replicate(
-    audio: IO,
-    model: str,
+    audio_filepath: str,
     replicate_api_token: str,
-    language: Optional[str] = None,
 ) -> dict:
-    assert model in WHISPER_MODELS
-
     os.environ["REPLICATE_API_TOKEN"] = replicate_api_token
 
     start_time = time.time()
 
+    audio: IO = open(audio_filepath, "rb")
     output = replicate.run(
-        "openai/whisper:" + WHISPER_VERSION,
-        input={"audio": audio},
+        # https://replicate.com/openai/whisper?input=python
+        "openai/whisper:8099696689d249cf8b122d833c36ac3f75505c666a395ca40ef26f68e7d3d16e",
+        input={
+            "audio": audio,
+            "language": "auto",
+        },
     )
 
     end_time = time.time()
