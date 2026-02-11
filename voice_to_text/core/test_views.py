@@ -1,3 +1,14 @@
+"""
+
+To test the main API call manually do:
+
+    from voice_to_text.core.views import _transcribe_audio_file_with_replicate
+
+    _transcribe_audio_file_with_replicate(
+        "voice_to_text/core/tests_data/taunt.wav", replicate_api_token="..."
+    )
+
+"""
 import os
 import json
 
