@@ -52,15 +52,13 @@ def share_target(request):
             and 'time' (float) as the number of seconds this took.
 
     """
-    replicate_api_token = request.session["replicate_api_token"]
-    model = request.POST.get("model", WHISPER_MODEL_DEFAULT)
+    replicate_api_token: str = request.session["replicate_api_token"]
 
     audio: IO = request.FILES["audio"]
     try:
         normalized_audio_filepath, cleanup_files = _normalize_audio(audio)
         results = _transcribe_audio_file_with_replicate(
             audio_filepath=normalized_audio_filepath,
-            model=model,
             replicate_api_token=replicate_api_token,
         )
     finally:
