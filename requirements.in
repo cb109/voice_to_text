@@ -1,9 +1,0 @@
-# prod
-django
-replicate
-whitenoise
-
-# dev
-pip-tools
-pytest
-pytest-django
